@@ -76,6 +76,7 @@ void decodeRuuvi(String hex_data, int rssi){
         Serial.print("Signal strength: ");
         Serial.print(rssi_ruuvi);
         Serial.println("");
+
     }
 }
 
