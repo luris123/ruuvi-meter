@@ -1,21 +1,17 @@
+/*
+   Based on Neil Kolban example for IDF: https://github.com/nkolban/esp32-snippets/blob/master/cpp_utils/tests/BLE%20Tests/SampleScan.cpp
+   Ported to Arduino ESP32 by Evandro Copercini
+*/
+
 #include <BLEDevice.h>
 #include <BLEUtils.h>
 #include <BLEScan.h>
 #include <BLEAdvertisedDevice.h>
 #include <BLEAddress.h>
-#include <WiFi.h>
-#include <HTTPClient.h>
 
 int scanTime = 5; //In seconds
 BLEScan* pBLEScan;
 int temp, hum, pressure, ax, ay, az, voltage_power, voltage, power, rssi_ruuvi, movement, measurement;
-String payload;
-String MAC_add = "MAC ADDRESS HERE"; //All the identified MAC addresses will go in one String
-
-const char* ssid     = "WIFI SSID HERE";              //Main Router      
-const char* password = "WIFI PASSWORD HERE";            //Main Router Password
-const char* url = "UBEAC GATEWAY URL HERE"; 
-
 //Converts hexadecimal values to decimal values
 int hexadecimalToDecimal(String hexVal)
 {
@@ -71,77 +67,36 @@ void decodeRuuvi(String hex_data, int rssi){
 
         movement = hexadecimalToDecimal(hex_data.substring(34, 36));
         measurement = hexadecimalToDecimal(hex_data.substring(36, 40));
+        Serial.print("Temperature: ");
+        Serial.print(temp);
+        Serial.println("°C");
+        Serial.print("Humidity: ");
+        Serial.print(hum);
+        Serial.println("%");
+        Serial.print("Signal strength: ");
+        Serial.print(rssi_ruuvi);
+        Serial.println("");
     }
 }
 
-//Converts decoded RUUVI data into uBeac JSON format
-void uBeacRuuvi(){
-  payload = "[{\"id\": \"MyRUUVI\", \"sensors\": [{\"id\": \"Temperature\", \"value\": $temperature$}, {\"id\": \"Humidity\", \"value\": $humidity$}, "
-                   "{\"id\": \"Pressure\", \"value\": $pressure$}, {\"id\": \"Acceleration\", \"value\": {\"ax\": $ax$,\"ay\": $ay$,\"az\": $az$,}}, "
-                   "{\"id\": \"Voltage Power\", \"value\": $voltage_power$}, {\"id\": \"Voltage\", \"value\": $voltage$}, {\"id\": \"Power\", \"value\": $power$}, "
-                   "{\"id\": \"RSSI\", \"value\": $rssi$}, {\"id\": \"Movement Counter\", \"value\": $movement$}, {\"id\": \"Measurement Sequence\", \"value\": $measurement$}]}]";
 
-  payload.replace("$temperature$",String(temp));
-  payload.replace("$humidity$",String(hum));  
-  payload.replace("$pressure$",String(pressure/100));
-  payload.replace("$ax$",String(ax*9.81/1000));
-  payload.replace("$ay$",String(ay*9.81/1000));
-  payload.replace("$az$",String(az*9.81/1000));
-  payload.replace("$voltage_power$",String(voltage_power));
-  payload.replace("$voltage$",String(voltage));
-  payload.replace("$power$",String(power));
-  payload.replace("$rssi$",String(rssi_ruuvi));
-  payload.replace("$movement$",String(movement));
-  payload.replace("$measurement$",String(measurement));
-}
 
-//Class that scans for BLE devices
 class MyAdvertisedDeviceCallbacks: public BLEAdvertisedDeviceCallbacks {
     void onResult(BLEAdvertisedDevice advertisedDevice) {
-      //Scans for specific BLE MAC addresses 
-      if(MAC_add.indexOf(advertisedDevice.getAddress().toString().c_str()) >= 0){ //If the scanned MAC address is in the identified MAC address String
+      String ruuvi_mac = advertisedDevice.getAddress().toString().c_str();
+      if (ruuvi_mac == "fb:44:89:ab:db:e0") {
         String raw_data = String(BLEUtils::buildHexData(nullptr, (uint8_t*)advertisedDevice.getManufacturerData().data(), advertisedDevice.getManufacturerData().length()));
         raw_data.toUpperCase();
         decodeRuuvi(raw_data, advertisedDevice.getRSSI());
-        uBeacRuuvi();
-      }  
-
-      //  Sends RuuviTag JSON data to IoT clod platform
-      if(WiFi.status()== WL_CONNECTED){ 
- 
-        HTTPClient http;   
-  
-        http.begin(url);  
-        int httpResponseCode = http.POST(payload); 
- 
-        if(httpResponseCode>0){
-          String response = http.getString(); 
-          Serial.println(httpResponseCode);
+        //Serial.printf("Advertised Device: %s \n", advertisedDevice.toString().c_str());
         }
-        http.end();
- 
-      }else{
-        Serial.println("Error in WiFi connection");    
-      } 
+      
+        
     }
 };
 
 void setup() {
   Serial.begin(115200);
-  
-  //Connect to Local WiFi
-  delay(4000);   //Delay needed before calling the WiFi.begin
- 
-  WiFi.begin(ssid, password); 
- 
-  while (WiFi.status() != WL_CONNECTED) { //Check for the connection
-    delay(1000);
-    Serial.println("Connecting to WiFi..");
-  }
- 
-  Serial.println("Connected to the WiFi network");
-
-  //BLE scanning
   Serial.println("Scanning...");
 
   BLEDevice::init("");
@@ -153,7 +108,9 @@ void setup() {
 }
 
 void loop() {
+  // put your main code here, to run repeatedly:
   BLEScanResults foundDevices = pBLEScan->start(scanTime, false);
+  Serial.println("Scan done!");
   pBLEScan->clearResults();   // delete results fromBLEScan buffer to release memory
-  delay(3000);
+  delay(2000);
 }
