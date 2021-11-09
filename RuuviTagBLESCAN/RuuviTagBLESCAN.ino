@@ -12,7 +12,7 @@
 
 
 DynamicJsonDocument jsonDoc(2048);
-String json;
+String json; 
 int scanTime = 5; //In seconds
 BLEScan* pBLEScan;
 int temp, hum, pressure, ax, ay, az, voltage_power, voltage, power, rssi_ruuvi, movement, measurement;
