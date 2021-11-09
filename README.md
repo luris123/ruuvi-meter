@@ -1,1 +1,1 @@
-# ruuvi-app
+# RuuviTag-app
