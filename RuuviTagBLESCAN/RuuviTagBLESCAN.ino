@@ -43,7 +43,7 @@ int hexadecimalToDecimal(String hexVal)
     return dec_val;
 }
 
-//Decodes RUUVI raw data and arranges it in an array
+//Decodes RUUVI raw data, arranges it in a JSON document and posts it to a database
 void decodeRuuvi(String hex_data, int rssi){
     DynamicJsonDocument jsonDoc(2048);
     char jsonBuffer[1024];
