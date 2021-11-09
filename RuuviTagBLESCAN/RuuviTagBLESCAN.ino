@@ -1,17 +1,22 @@
-/*
-   Based on Neil Kolban example for IDF: https://github.com/nkolban/esp32-snippets/blob/master/cpp_utils/tests/BLE%20Tests/SampleScan.cpp
-   Ported to Arduino ESP32 by Evandro Copercini
-*/
-
+//Remember to use Partition Scheme:"Huge APP"
+#include <creds.h>
 #include <BLEDevice.h>
 #include <BLEUtils.h>
 #include <BLEScan.h>
 #include <BLEAdvertisedDevice.h>
 #include <BLEAddress.h>
+#include "ArduinoJson.h"
+#include "HTTPClient.h"
 
+#define API_KEY "AIzaSyBaZiJJ8sJcJX2VC4gavlvIARz2-hmg4Pw"
+
+
+DynamicJsonDocument jsonDoc(2048);
+String json;
 int scanTime = 5; //In seconds
 BLEScan* pBLEScan;
 int temp, hum, pressure, ax, ay, az, voltage_power, voltage, power, rssi_ruuvi, movement, measurement;
+
 //Converts hexadecimal values to decimal values
 int hexadecimalToDecimal(String hexVal)
 {
@@ -40,7 +45,13 @@ int hexadecimalToDecimal(String hexVal)
 
 //Decodes RUUVI raw data and arranges it in an array
 void decodeRuuvi(String hex_data, int rssi){
+    DynamicJsonDocument jsonDoc(2048);
+    char jsonBuffer[1024];
+    JsonArray ruuviDataList = jsonDoc.createNestedArray("ruuviDataList");
+    
     if(hex_data.substring(4, 6) == "05"){
+      
+      //Decoding the data
         temp = hexadecimalToDecimal(hex_data.substring(6, 10))*0.005;
         hum = hexadecimalToDecimal(hex_data.substring(10, 14))*0.0025;
         pressure = hexadecimalToDecimal(hex_data.substring(14, 18))*1+50000;
@@ -67,17 +78,42 @@ void decodeRuuvi(String hex_data, int rssi){
 
         movement = hexadecimalToDecimal(hex_data.substring(34, 36));
         measurement = hexadecimalToDecimal(hex_data.substring(36, 40));
-        Serial.print("Temperature: ");
-        Serial.print(temp);
-        Serial.println("°C");
-        Serial.print("Humidity: ");
-        Serial.print(hum);
-        Serial.println("%");
-        Serial.print("Signal strength: ");
-        Serial.print(rssi_ruuvi);
-        Serial.println("");
+        
+        //Adding the data to a JSON document and posting it to the firebase database
+        JsonObject ruuviDataNet = ruuviDataList.createNestedObject();
+        ruuviDataNet["Temperature"] = temp;
+        ruuviDataNet["Humidity"] = hum;
+        ruuviDataNet["RSSI"] = rssi_ruuvi;
+        Serial.println(" ");
+        serializeJsonPretty(jsonDoc, Serial);
+        String data;
+        serializeJsonPretty(jsonDoc, data);
+        postDataToServer(data);
 
     }
+}
+
+void postDataToServer(String data) {
+  Serial.println("Posting JSON data to server...");
+
+  if (WiFi.status() == WL_CONNECTED) {
+    HTTPClient http;
+
+    http.begin("https://ruuvibase-default-rtdb.europe-west1.firebasedatabase.app/items/.json");
+    http.addHeader("Content-Type", "application/json");
+    http.addHeader("X-API-KEY", API_KEY);
+    int httpResponseCode = http.POST(data);
+
+    if (httpResponseCode > 0) {
+
+      String response = http.getString();
+
+      Serial.println(httpResponseCode);
+      Serial.println(response);
+    } else {
+      Serial.printf("Error occurred while sending HTTP POST: %s\n");
+    }
+  }
 }
 
 
@@ -98,6 +134,14 @@ class MyAdvertisedDeviceCallbacks: public BLEAdvertisedDeviceCallbacks {
 
 void setup() {
   Serial.begin(115200);
+  WiFi.begin(SSID, WIFIPASS);
+  Serial.print("Connecting to Wi-Fi");
+  while (WiFi.status() != WL_CONNECTED){
+    Serial.print(".");
+    delay(300);
+  }
+  Serial.println("");
+  Serial.println("Connected!");
   Serial.println("Scanning...");
 
   BLEDevice::init("");
@@ -106,10 +150,10 @@ void setup() {
   pBLEScan->setActiveScan(true); //active scan uses more power, but get results faster
   pBLEScan->setInterval(100);
   pBLEScan->setWindow(99);  // less or equal setInterval value
+  
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
   BLEScanResults foundDevices = pBLEScan->start(scanTime, false);
   Serial.println("Scan done!");
   pBLEScan->clearResults();   // delete results fromBLEScan buffer to release memory
