@@ -1,15 +1,13 @@
 //In Arduino remember to use Partition Scheme:"Huge APP"
 #include <creds.h>
+#include <APIKEY_AND_URL.h>
 #include <BLEDevice.h>
 #include <BLEUtils.h>
 #include <BLEScan.h>
 #include <BLEAdvertisedDevice.h>
 #include <BLEAddress.h>
-#include "ArduinoJson.h"
-#include "HTTPClient.h"
-
-#define API_KEY "AIzaSyBaZiJJ8sJcJX2VC4gavlvIARz2-hmg4Pw"
-
+#include <ArduinoJson.h>
+#include <HTTPClient.h>
 
 DynamicJsonDocument jsonDoc(2048);
 String json; 
@@ -98,7 +96,7 @@ void postDataToServer(String data) {
   if (WiFi.status() == WL_CONNECTED) {
     HTTPClient http;
 
-    http.begin("https://ruuvibase-default-rtdb.europe-west1.firebasedatabase.app/items/.json");
+    http.begin(DATABASE_URL);
     http.addHeader("Content-Type", "application/json");
     http.addHeader("X-API-KEY", API_KEY);
     int httpResponseCode = http.POST(data);
