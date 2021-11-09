@@ -9,8 +9,7 @@
 #include <ArduinoJson.h>
 #include <HTTPClient.h>
 
-DynamicJsonDocument jsonDoc(2048);
-String json; 
+
 int scanTime = 5; //In seconds
 BLEScan* pBLEScan;
 int temp, hum, pressure, ax, ay, az, voltage_power, voltage, power, rssi_ruuvi, movement, measurement;
@@ -43,10 +42,8 @@ int hexadecimalToDecimal(String hexVal)
 
 //Decodes RUUVI raw data, arranges it in a JSON document and posts it to a database
 void decodeRuuvi(String hex_data, int rssi){
-    DynamicJsonDocument jsonDoc(2048);
-    char jsonBuffer[1024];
-    JsonArray ruuviDataList = jsonDoc.createNestedArray("ruuviDataList");
-    
+    StaticJsonDocument<128> jsonDoc;
+          
     if(hex_data.substring(4, 6) == "05"){
       
       //Decoding the data
@@ -78,14 +75,14 @@ void decodeRuuvi(String hex_data, int rssi){
         measurement = hexadecimalToDecimal(hex_data.substring(36, 40));
         
         //Adding the data to a JSON document and posting it to the firebase database
-        JsonObject ruuviDataNet = ruuviDataList.createNestedObject();
-        ruuviDataNet["Temperature"] = temp;
-        ruuviDataNet["Humidity"] = hum;
-        ruuviDataNet["RSSI"] = rssi_ruuvi;
+        jsonDoc["Temperature"] = temp;
+        jsonDoc["Humidity"] = hum;
+        jsonDoc["RSSI"] = rssi_ruuvi;
         serializeJsonPretty(jsonDoc, Serial);
         String data;
         serializeJsonPretty(jsonDoc, data);
         postDataToDatabase(data);
+        Serial.println(data);
 
     }
 }
@@ -99,7 +96,6 @@ void postDataToDatabase(String data) {
 
     http.begin(DATABASE_URL);
     http.addHeader("Content-Type", "application/json");
-    http.addHeader("X-API-KEY", API_KEY);
     int httpResponseCode = http.POST(data);
 
     if (httpResponseCode > 0) {
