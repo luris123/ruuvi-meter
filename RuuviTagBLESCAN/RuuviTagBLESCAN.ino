@@ -42,7 +42,6 @@ int hexadecimalToDecimal(String hexVal)
 
 //Decodes RUUVI raw data, arranges it in a JSON document and posts it to a database
 void decodeRuuvi(String hex_data, int rssi){
-    StaticJsonDocument<128> jsonDoc;
           
     if(hex_data.substring(4, 6) == "05"){
       
@@ -75,14 +74,17 @@ void decodeRuuvi(String hex_data, int rssi){
         measurement = hexadecimalToDecimal(hex_data.substring(36, 40));
         
         //Adding the data to a JSON document and posting it to the firebase database
-        jsonDoc["Temperature"] = temp;
-        jsonDoc["Humidity"] = hum;
-        jsonDoc["RSSI"] = rssi_ruuvi;
-        serializeJsonPretty(jsonDoc, Serial);
-        String data;
-        serializeJsonPretty(jsonDoc, data);
-        postDataToDatabase(data);
-        Serial.println(data);
+        StaticJsonDocument<200> doc;
+        doc["Temperature"] = temp;
+        doc["Humidity"] = hum;
+        doc["RSSI"] = rssi_ruuvi;
+   
+        serializeJsonPretty(doc, Serial);
+        String jsondata;
+        serializeJsonPretty(doc, jsondata);
+        
+        postDataToDatabase(jsondata);
+      
 
     }
 }
@@ -96,6 +98,8 @@ void postDataToDatabase(String data) {
 
     http.begin(DATABASE_URL);
     http.addHeader("Content-Type", "application/json");
+    http.addHeader("API-KEY", API_KEY);
+
     int httpResponseCode = http.POST(data);
 
     if (httpResponseCode > 0) {
