@@ -1,4 +1,4 @@
-//Remember to use Partition Scheme:"Huge APP"
+//In Arduino remember to use Partition Scheme:"Huge APP"
 #include <creds.h>
 #include <BLEDevice.h>
 #include <BLEUtils.h>
@@ -84,7 +84,6 @@ void decodeRuuvi(String hex_data, int rssi){
         ruuviDataNet["Temperature"] = temp;
         ruuviDataNet["Humidity"] = hum;
         ruuviDataNet["RSSI"] = rssi_ruuvi;
-        Serial.println(" ");
         serializeJsonPretty(jsonDoc, Serial);
         String data;
         serializeJsonPretty(jsonDoc, data);
