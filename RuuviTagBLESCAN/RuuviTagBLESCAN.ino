@@ -85,12 +85,13 @@ void decodeRuuvi(String hex_data, int rssi){
         serializeJsonPretty(jsonDoc, Serial);
         String data;
         serializeJsonPretty(jsonDoc, data);
-        postDataToServer(data);
+        postDataToDatabase(data);
 
     }
 }
 
-void postDataToServer(String data) {
+//Function that posts data to database
+void postDataToDatabase(String data) {
   Serial.println("Posting JSON data to server...");
 
   if (WiFi.status() == WL_CONNECTED) {
@@ -114,7 +115,7 @@ void postDataToServer(String data) {
 }
 
 
-
+//Class that scans for BLE devices
 class MyAdvertisedDeviceCallbacks: public BLEAdvertisedDeviceCallbacks {
     void onResult(BLEAdvertisedDevice advertisedDevice) {
       String ruuvi_mac = advertisedDevice.getAddress().toString().c_str();
