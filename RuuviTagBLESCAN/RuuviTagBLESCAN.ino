@@ -74,7 +74,7 @@ void decodeRuuvi(String hex_data, int rssi){
         measurement = hexadecimalToDecimal(hex_data.substring(36, 40));
         
         //Adding the data to a JSON document and posting it to the firebase database
-        StaticJsonDocument<200> doc;
+        DynamicJsonDocument doc(200);
         doc["Temperature"] = temp;
         doc["Humidity"] = hum;
         doc["RSSI"] = rssi_ruuvi;
@@ -100,7 +100,7 @@ void postDataToDatabase(String data) {
     http.addHeader("Content-Type", "application/json");
     http.addHeader("API-KEY", API_KEY);
 
-    int httpResponseCode = http.POST(data);
+    int httpResponseCode = http.PUT(data);
 
     if (httpResponseCode > 0) {
 
