@@ -8,7 +8,7 @@ function Dashboard() {
   const [isLoading, setLoading] = useState(true);
   const [data, setData] = useState([]);
 
-  const getMovies = async () => {
+  const getData = async () => {
     try {
       const response = await fetch(API_URL);
       const json = await response.json();
@@ -21,7 +21,7 @@ function Dashboard() {
   };
 
   useEffect(() => {
-    getMovies();
+    getData();
   }, []);
 
   return (
@@ -34,7 +34,9 @@ function Dashboard() {
           keyExtractor={({ id }, index) => id}
           renderItem={({ item }) => (
             <Text>
-              {item.Temperature}, {item.Humidity}, {item.RSSI}
+              Temperature: {item.Temperature}
+              {"\n"}Humidity: {item.Humidity}
+              {"\n"}RSSI: {item.RSSI}
             </Text>
           )}
         />
