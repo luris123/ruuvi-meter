@@ -115,13 +115,11 @@ void postDataToDatabase(String data) {
 
       Serial.println(httpResponseCode);
       Serial.println(response);
-      Serial.println(WiFi.localIP());
     } else {
       String response = http.getString();
       Serial.printf("Error occurred while sending HTTP POST: %s\n");
       Serial.println(httpResponseCode);
       Serial.println(response);
-      ESP.restart();
       connectToWiFi();
     }
   }
