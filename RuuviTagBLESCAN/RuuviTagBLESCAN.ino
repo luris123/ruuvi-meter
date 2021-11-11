@@ -8,11 +8,13 @@
 #include <BLEAddress.h>
 #include <ArduinoJson.h>
 #include <HTTPClient.h>
+#include <WiFi.h>
 
 
 int scanTime = 5; //In seconds
 BLEScan* pBLEScan;
-int temp, hum, pressure, ax, ay, az, voltage_power, voltage, power, rssi_ruuvi, movement, measurement;
+int pressure, ax, ay, az, voltage_power, voltage, power, rssi_ruuvi, movement, measurement;
+float temp, hum;
 
 //Converts hexadecimal values to decimal values
 int hexadecimalToDecimal(String hexVal)
@@ -113,9 +115,26 @@ void postDataToDatabase(String data) {
       Serial.println(httpResponseCode);
       Serial.println(response);
     } else {
+      String response = http.getString();
       Serial.printf("Error occurred while sending HTTP POST: %s\n");
+      Serial.println(httpResponseCode);
+      Serial.println(response);
+      ESP.restart();
+      connectToWiFi();
     }
   }
+}
+
+void connectToWiFi() {
+  WiFi.mode(WIFI_STA);
+  WiFi.begin(SSID, WIFIPASS);
+  Serial.print("Connecting to Wi-Fi");
+  while (WiFi.status() != WL_CONNECTED){
+    Serial.print(".");
+    delay(300);
+  }
+  Serial.println("");
+  Serial.println("Connected!");  
 }
 
 
@@ -136,14 +155,7 @@ class MyAdvertisedDeviceCallbacks: public BLEAdvertisedDeviceCallbacks {
 
 void setup() {
   Serial.begin(115200);
-  WiFi.begin(SSID, WIFIPASS);
-  Serial.print("Connecting to Wi-Fi");
-  while (WiFi.status() != WL_CONNECTED){
-    Serial.print(".");
-    delay(300);
-  }
-  Serial.println("");
-  Serial.println("Connected!");
+  connectToWiFi();
   Serial.println("Scanning...");
 
   BLEDevice::init("");

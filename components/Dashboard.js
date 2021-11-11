@@ -1,4 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
+import * as Notifications from "expo-notifications";
+
 import {
   ActivityIndicator,
   FlatList,
@@ -38,11 +40,11 @@ function Dashboard() {
       ) : (
         <FlatList
           data={data}
-          keyExtractor={({ id }, index) => id}
+          keyExtractor={(item) => item.id.toString()}
           renderItem={({ item }) => (
             <Text style={styles.title}>
-              Temperature: {item.Temperature + "°C\n"}
-              Humidity: {item.Humidity + "%\n"}
+              Temperature: {item.Temperature.toFixed(2) + "°C\n"}
+              Humidity: {item.Humidity.toFixed(2) + "%\n"}
               RSSI: {item.RSSI}
             </Text>
           )}
