@@ -9,6 +9,7 @@
 #include <ArduinoJson.h>
 #include <HTTPClient.h>
 #include <WiFi.h>
+#include <time.h>
 
 
 int scanTime = 5; //In seconds
@@ -114,6 +115,7 @@ void postDataToDatabase(String data) {
 
       Serial.println(httpResponseCode);
       Serial.println(response);
+      Serial.println(WiFi.localIP());
     } else {
       String response = http.getString();
       Serial.printf("Error occurred while sending HTTP POST: %s\n");
@@ -126,15 +128,19 @@ void postDataToDatabase(String data) {
 }
 
 void connectToWiFi() {
+  int timeStart = clock();
   WiFi.mode(WIFI_STA);
   WiFi.begin(SSID, WIFIPASS);
   Serial.print("Connecting to Wi-Fi");
   while (WiFi.status() != WL_CONNECTED){
     Serial.print(".");
     delay(300);
+    if ((clock() - timeStart) / CLOCKS_PER_SEC >= 10) // time in seconds
+        ESP.restart();
   }
   Serial.println("");
   Serial.println("Connected!");  
+
 }
 
 
