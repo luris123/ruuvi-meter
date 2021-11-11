@@ -41,9 +41,9 @@ function Dashboard() {
           keyExtractor={({ id }, index) => id}
           renderItem={({ item }) => (
             <Text style={styles.title}>
-              Temperature: {item.Temperature}
-              {"\n"}Humidity: {item.Humidity}
-              {"\n"}RSSI: {item.RSSI}
+              Temperature: {item.Temperature + "°C\n"}
+              Humidity: {item.Humidity + "%\n"}
+              RSSI: {item.RSSI}
             </Text>
           )}
         />
