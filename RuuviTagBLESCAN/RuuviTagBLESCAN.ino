@@ -75,13 +75,17 @@ void decodeRuuvi(String hex_data, int rssi){
         
         //Adding the data to a JSON document and posting it to the firebase database
         DynamicJsonDocument doc(200);
-        doc["Temperature"] = temp;
-        doc["Humidity"] = hum;
-        doc["RSSI"] = rssi_ruuvi;
-   
-        serializeJsonPretty(doc, Serial);
+        JsonArray array = doc.createNestedArray("ruuviData");
+        JsonObject nestedRuuviData  = array.createNestedObject();
+        nestedRuuviData["Temperature"] = temp;
+        nestedRuuviData["Humidity"] = hum;
+        nestedRuuviData["RSSI"] = rssi_ruuvi;
+        nestedRuuviData["id"] = 1;
+
+        
+        serializeJsonPretty(array, Serial);
         String jsondata;
-        serializeJsonPretty(doc, jsondata);
+        serializeJsonPretty(array, jsondata);
         
         postDataToDatabase(jsondata);
       
