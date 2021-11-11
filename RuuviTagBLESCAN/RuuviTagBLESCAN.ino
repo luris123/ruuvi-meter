@@ -120,6 +120,7 @@ void postDataToDatabase(String data) {
       Serial.printf("Error occurred while sending HTTP POST: %s\n");
       Serial.println(httpResponseCode);
       Serial.println(response);
+      Serial.println("Reconnecting to the WiFi");
       connectToWiFi();
     }
   }
@@ -133,8 +134,10 @@ void connectToWiFi() {
   while (WiFi.status() != WL_CONNECTED){
     Serial.print(".");
     delay(300);
-    if ((clock() - timeStart) / CLOCKS_PER_SEC >= 10) // time in seconds
-        ESP.restart();
+    if ((clock() - timeStart) / CLOCKS_PER_SEC >= 10){  // time in seconds
+      Serial.println("Rebooting ESP32");
+      ESP.restart();
+      } 
   }
   Serial.println("");
   Serial.println("Connected!");  
