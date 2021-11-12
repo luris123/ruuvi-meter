@@ -120,6 +120,8 @@ void postDataToDatabase(String data) {
       Serial.printf("Error occurred while sending HTTP POST: %s\n");
       Serial.println(httpResponseCode);
       Serial.println(response);
+      Serial.println("Rebooting ESP32");
+      ESP.restart();
       Serial.println("Reconnecting to Wi-Fi");
       connectToWiFi();
     }
