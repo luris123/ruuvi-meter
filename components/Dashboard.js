@@ -1,6 +1,4 @@
 import React, { useEffect, useState } from "react";
-import Constants from "expo-constants";
-import * as Notifications from "expo-notifications";
 
 import {
   ActivityIndicator,
@@ -8,9 +6,6 @@ import {
   Text,
   View,
   StyleSheet,
-  Keyboard,
-  TextInput,
-  Button,
 } from "react-native";
 
 const API_URL =
@@ -19,7 +14,6 @@ const API_URL =
 function Dashboard() {
   const [isLoading, setLoading] = useState(true);
   const [data, setData] = useState([]);
-  const [text, onChangeText] = useState("");
 
   const getData = async () => {
     try {
@@ -34,33 +28,8 @@ function Dashboard() {
     }
   };
 
-  const onSubmit = (seconds) => {
-    Keyboard.dismiss();
-    const schedulingOptions = {
-      content: {
-        title: "This is a notification",
-        body: "This is the body",
-        sound: true,
-        priority: Notifications.AndroidNotificationPriority.HIGH,
-        color: "blue",
-      },
-      trigger: {
-        seconds: seconds,
-      },
-    };
-    // Notifications show only when app is not active.
-    // (ie. another app being used or device's screen is locked)
-    Notifications.scheduleNotificationAsync(schedulingOptions);
-  };
-  const handleNotification = () => {
-    console.warn("ok! got your notif");
-  };
-
   useEffect(() => {
     getData();
-    const listener =
-      Notifications.addNotificationReceivedListener(handleNotification);
-    return () => listener.remove();
   }, []);
 
   return (
@@ -80,14 +49,7 @@ function Dashboard() {
               </Text>
             )}
           />
-          <TextInput
-            onChangeText={onChangeText}
-            value={text}
-            placeholder="Seconds"
-            style={{ fontSize: 30, borderWidth: 1, width: 300 }}
-            keyboardType="numeric"
-          />
-          <Button onPress={() => onSubmit(Number(text))} title="Schedule" />
+          <Text style={styles.title}>onko ttune</Text>
         </>
       )}
     </View>
