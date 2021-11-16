@@ -49,7 +49,6 @@ function Dashboard() {
               </Text>
             )}
           />
-          <Text style={styles.title}>onko ttune</Text>
         </>
       )}
     </View>
