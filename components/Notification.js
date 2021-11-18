@@ -58,7 +58,6 @@ function NotificationsScreen({ navigation }) {
           }}
           title="Schedule and go back to dashboard"
         />
-        <Text>{text}</Text>
       </>
     </View>
   );

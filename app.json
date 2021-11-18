@@ -14,7 +14,6 @@
         }
       ]
     ],
-
     "name": "ruuvi-app",
     "slug": "ruuvi-app",
     "version": "1.0.0",
@@ -39,8 +38,8 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
       },
-      "useNextNotificationsApi": true
-
+      "useNextNotificationsApi": true,
+      "package": "io.expo.ruuvi"
     },
     "web": {
       "favicon": "./assets/favicon.png"
