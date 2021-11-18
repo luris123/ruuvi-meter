@@ -56,7 +56,7 @@ function NotificationsScreen({ navigation }) {
             onSubmit(Number(text));
             navigation.goBack();
           }}
-          title="Schedule"
+          title="Schedule and go back to dashboard"
         />
         <Text>{text}</Text>
       </>
