@@ -4,7 +4,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import Dashboard from "./components/Dashboard.js";
 import NotificationsScreen from "./components/Notification.js";
 import SettingsScreen from "./components/Settings.js";
-import ProfileScreen from "./components/Settings.js";
+import ProfileScreen from "./components/Profile.js";
 
 const Drawer = createDrawerNavigator();
 
