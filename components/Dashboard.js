@@ -8,6 +8,7 @@ const API_URL =
 function Dashboard() {
   const [isLoading, setLoading] = useState(true);
   const [data, setData] = useState([]);
+  const [tenMinutedata, setTenMinutedata] = useState([]);
 
   const getData = async () => {
     try {
@@ -22,8 +23,22 @@ function Dashboard() {
     }
   };
 
+  const getTenMinuteData = async () => {
+    try {
+      const response = await fetch(API_URL);
+      const json = await response.json();
+      setTenMinutedata(json);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     getData();
+    setInterval(getTenMinuteData(), 600000);
+    tenMinutes();
   }, []);
 
   return (
@@ -32,8 +47,21 @@ function Dashboard() {
         <ActivityIndicator />
       ) : (
         <>
+          <Text style={styles.title}>Real time data</Text>
           <FlatList
             data={data}
+            keyExtractor={(item) => item.id.toString()}
+            renderItem={({ item }) => (
+              <Text style={styles.title}>
+                Temperature: {item.Temperature.toFixed(2) + "°C\n"}
+                Humidity: {item.Humidity.toFixed(2) + "%\n"}
+                RSSI: {item.RSSI}
+              </Text>
+            )}
+          />
+          <Text style={styles.title}>Data from 10 minutes ago</Text>
+          <FlatList
+            data={tenMinutedata}
             keyExtractor={(item) => item.id.toString()}
             renderItem={({ item }) => (
               <Text style={styles.title}>
