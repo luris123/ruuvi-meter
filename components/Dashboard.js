@@ -8,7 +8,8 @@ const API_URL =
 function Dashboard() {
   const [isLoading, setLoading] = useState(true);
   const [data, setData] = useState([]);
-  const [tenMinutedata, setTenMinutedata] = useState([]);
+  const [tenMinuteData, setTenMinuteData] = useState([]);
+  const [thirtyMinuteData, setThirtyMinuteData] = useState([]);
 
   const getData = async () => {
     try {
@@ -27,7 +28,19 @@ function Dashboard() {
     try {
       const response = await fetch(API_URL);
       const json = await response.json();
-      setTenMinutedata(json);
+      setTenMinuteData(json);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const getThirtyMinuteData = async () => {
+    try {
+      const response = await fetch(API_URL);
+      const json = await response.json();
+      setThirtyMinuteData(json);
     } catch (error) {
       console.error(error);
     } finally {
@@ -37,8 +50,16 @@ function Dashboard() {
 
   useEffect(() => {
     getData();
-    setInterval(getTenMinuteData(), 600000);
-    tenMinutes();
+    getTenMinuteData();
+    getThirtyMinuteData();
+
+    setInterval(() => {
+      getTenMinuteData();
+    }, 10000);
+
+    setInterval(() => {
+      getThirtyMinuteData();
+    }, 30000);
   }, []);
 
   return (
@@ -59,9 +80,25 @@ function Dashboard() {
               </Text>
             )}
           />
-          <Text style={styles.title}>Data from 10 minutes ago</Text>
+          <Text style={styles.title}>
+            Data that will update every 10 minutes
+          </Text>
           <FlatList
-            data={tenMinutedata}
+            data={tenMinuteData}
+            keyExtractor={(item) => item.id.toString()}
+            renderItem={({ item }) => (
+              <Text style={styles.title}>
+                Temperature: {item.Temperature.toFixed(2) + "°C\n"}
+                Humidity: {item.Humidity.toFixed(2) + "%\n"}
+                RSSI: {item.RSSI}
+              </Text>
+            )}
+          />
+          <Text style={styles.title}>
+            Data that will update every 30 minutes
+          </Text>
+          <FlatList
+            data={thirtyMinuteData}
             keyExtractor={(item) => item.id.toString()}
             renderItem={({ item }) => (
               <Text style={styles.title}>
