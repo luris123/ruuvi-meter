@@ -55,11 +55,11 @@ function Dashboard() {
 
     setInterval(() => {
       getTenMinuteData();
-    }, 10000);
+    }, 10000 * 60);
 
     setInterval(() => {
       getThirtyMinuteData();
-    }, 30000);
+    }, 30000 * 60);
   }, []);
 
   return (
@@ -68,7 +68,7 @@ function Dashboard() {
         <ActivityIndicator />
       ) : (
         <>
-          <Text style={styles.title}>Real time data</Text>
+          <Text style={styles.text}>Real time data</Text>
           <FlatList
             data={data}
             keyExtractor={(item) => item.id.toString()}
@@ -80,7 +80,7 @@ function Dashboard() {
               </Text>
             )}
           />
-          <Text style={styles.title}>
+          <Text style={styles.text}>
             Data that will update every 10 minutes
           </Text>
           <FlatList
@@ -94,7 +94,7 @@ function Dashboard() {
               </Text>
             )}
           />
-          <Text style={styles.title}>
+          <Text style={styles.text}>
             Data that will update every 30 minutes
           </Text>
           <FlatList

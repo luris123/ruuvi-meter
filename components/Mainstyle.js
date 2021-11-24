@@ -1,12 +1,4 @@
 import { StyleSheet } from "react-native";
-import {
-  LineChart,
-  BarChart,
-  PieChart,
-  ProgressChart,
-  ContributionGraph,
-  StackedBarChart,
-} from "react-native-chart-kit";
 
 export default StyleSheet.create({
   container: {
@@ -27,6 +19,19 @@ export default StyleSheet.create({
     color: "#20232a",
     textAlign: "center",
     fontSize: 30,
+    fontWeight: "bold",
+  },
+  text: {
+    marginTop: 8,
+    paddingVertical: 4,
+    paddingHorizontal: 4,
+    borderWidth: 4,
+    borderColor: "#20232a",
+    borderRadius: 6,
+    backgroundColor: "#61dafb",
+    color: "#20232a",
+    textAlign: "center",
+    fontSize: 20,
     fontWeight: "bold",
   },
 });
