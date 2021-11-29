@@ -1,5 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { ActivityIndicator, FlatList, Text, View } from "react-native";
+import {
+  ActivityIndicator,
+  FlatList,
+  Text,
+  View,
+  ImageBackground,
+} from "react-native";
 import styles from "./Mainstyle.js";
 
 const API_URL =
@@ -63,54 +69,55 @@ function Dashboard() {
   }, []);
 
   return (
-    <View style={styles.container}>
-      {isLoading ? (
-        <ActivityIndicator />
-      ) : (
-        <>
-          <Text style={styles.text}>Real time data</Text>
-          <FlatList
-            data={data}
-            keyExtractor={(item) => item.id.toString()}
-            renderItem={({ item }) => (
-              <Text style={styles.title}>
-                Temperature: {item.Temperature.toFixed(2) + "°C\n"}
-                Humidity: {item.Humidity.toFixed(2) + "%\n"}
-                RSSI: {item.RSSI}
-              </Text>
-            )}
-          />
-          <Text style={styles.text}>
-            Data that will update every 10 minutes
-          </Text>
-          <FlatList
-            data={tenMinuteData}
-            keyExtractor={(item) => item.id.toString()}
-            renderItem={({ item }) => (
-              <Text style={styles.title}>
-                Temperature: {item.Temperature.toFixed(2) + "°C\n"}
-                Humidity: {item.Humidity.toFixed(2) + "%\n"}
-                RSSI: {item.RSSI}
-              </Text>
-            )}
-          />
-          <Text style={styles.text}>
-            Data that will update every 30 minutes
-          </Text>
-          <FlatList
-            data={thirtyMinuteData}
-            keyExtractor={(item) => item.id.toString()}
-            renderItem={({ item }) => (
-              <Text style={styles.title}>
-                Temperature: {item.Temperature.toFixed(2) + "°C\n"}
-                Humidity: {item.Humidity.toFixed(2) + "%\n"}
-                RSSI: {item.RSSI}
-              </Text>
-            )}
-          />
-        </>
-      )}
-    </View>
+    <ImageBackground
+      style={styles.backgroundImage}
+      source={require("../assets/background.jpg")}
+    >
+      <View style={styles.container}>
+        {isLoading ? (
+          <ActivityIndicator />
+        ) : (
+          <>
+            <Text style={styles.text}>Real time data</Text>
+            <FlatList
+              data={data}
+              keyExtractor={(item) => item.id.toString()}
+              renderItem={({ item }) => (
+                <Text style={styles.title}>
+                  Temperature: {item.Temperature.toFixed(2) + "°C\n"}
+                  Humidity: {item.Humidity.toFixed(2) + "%\n"}
+                  RSSI: {item.RSSI}
+                </Text>
+              )}
+            />
+            <Text style={styles.text}>Data that updates every 10 minutes</Text>
+            <FlatList
+              data={tenMinuteData}
+              keyExtractor={(item) => item.id.toString()}
+              renderItem={({ item }) => (
+                <Text style={styles.title}>
+                  Temperature: {item.Temperature.toFixed(2) + "°C\n"}
+                  Humidity: {item.Humidity.toFixed(2) + "%\n"}
+                  RSSI: {item.RSSI}
+                </Text>
+              )}
+            />
+            <Text style={styles.text}>Data that updates every 30 minutes</Text>
+            <FlatList
+              data={thirtyMinuteData}
+              keyExtractor={(item) => item.id.toString()}
+              renderItem={({ item }) => (
+                <Text style={styles.title}>
+                  Temperature: {item.Temperature.toFixed(2) + "°C\n"}
+                  Humidity: {item.Humidity.toFixed(2) + "%\n"}
+                  RSSI: {item.RSSI}
+                </Text>
+              )}
+            />
+          </>
+        )}
+      </View>
+    </ImageBackground>
   );
 }
 

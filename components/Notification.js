@@ -1,5 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { Keyboard, TextInput, Text, View, Button } from "react-native";
+import {
+  Keyboard,
+  TextInput,
+  Text,
+  View,
+  Button,
+  ImageBackground,
+} from "react-native";
 import styles from "./Mainstyle.js";
 import * as Notifications from "expo-notifications";
 
@@ -39,27 +46,32 @@ function NotificationsScreen({ navigation }) {
   }, []);
 
   return (
-    <View style={styles.container}>
-      <>
-        <Text style={styles.title}>
-          Input when the user should be reminded.
-        </Text>
-        <TextInput
-          onChangeText={onChangeText}
-          value={text}
-          placeholder="Minutes"
-          style={{ fontSize: 30, borderWidth: 1, width: 300 }}
-          keyboardType="numeric"
-        />
-        <Button
-          onPress={() => {
-            onSubmit(Number(text));
-            navigation.goBack();
-          }}
-          title="Schedule and go back to dashboard"
-        />
-      </>
-    </View>
+    <ImageBackground
+      style={styles.backgroundImage}
+      source={require("../assets/background.jpg")}
+    >
+      <View style={styles.container}>
+        <>
+          <Text style={styles.title}>
+            Input when the user should be reminded.
+          </Text>
+          <TextInput
+            onChangeText={onChangeText}
+            value={text}
+            placeholder="Minutes"
+            style={{ fontSize: 30, borderWidth: 1, width: 300 }}
+            keyboardType="numeric"
+          />
+          <Button
+            onPress={() => {
+              onSubmit(Number(text));
+              navigation.goBack();
+            }}
+            title="Schedule and go back to dashboard"
+          />
+        </>
+      </View>
+    </ImageBackground>
   );
 }
 export default NotificationsScreen;

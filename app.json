@@ -4,7 +4,7 @@
       [
         "expo-notifications",
         {
-          "icon": "./local/assets/notification-icon.png",
+          "icon": "./assets/customIcon.png",
           "color": "#ffffff",
           "sounds": [
             "./local/assets/notification-sound.wav",
@@ -18,9 +18,9 @@
     "slug": "ruuvi-app",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/customIcon.png",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/customSplash.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -35,7 +35,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/customAdaptive-icon.png",
         "backgroundColor": "#FFFFFF"
       },
       "useNextNotificationsApi": true,
