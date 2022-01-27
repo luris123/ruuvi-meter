@@ -1,1 +1,1 @@
-# RuuviTag-app
+# RuuviMeter
