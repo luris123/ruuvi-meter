@@ -22,17 +22,10 @@
     "react-native": "https://github.com/expo/react-native/archive/sdk-42.0.0.tar.gz",
     "react-native-chart-kit": "^6.11.0",
     "react-native-gesture-handler": "~1.10.2",
-    "react-native-highcharts": "^1.0.2",
-    "react-native-off-canvas-menu": "^0.1.32",
-    "react-native-plotly": "^5.0.0",
-    "react-native-push-notification": "^8.1.1",
     "react-native-reanimated": "~2.2.0",
     "react-native-safe-area-context": "3.2.0",
     "react-native-screens": "~3.4.0",
-    "react-native-svg": "12.1.1",
-    "react-native-svg-charts": "^5.4.0",
-    "react-native-web": "^0.17.5",
-    "@react-native-async-storage/async-storage": "~1.15.0"
+    "react-native-web": "^0.17.5"
   },
   "devDependencies": {
     "@babel/core": "^7.9.0"
