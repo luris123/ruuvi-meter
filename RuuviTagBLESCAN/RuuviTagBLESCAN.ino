@@ -1,4 +1,4 @@
-//In Arduino remember to use Partition Scheme:"Huge APP"
+//In Arduino IDE remember to use Partition Scheme:"Huge APP" because BLE libraries are usually huge
 #include <creds.h>
 #include <APIKEY_AND_URL.h>
 #include <BLEDevice.h>
@@ -76,7 +76,7 @@ void decodeRuuvi(String hex_data, int rssi){
         movement = hexadecimalToDecimal(hex_data.substring(34, 36));
         measurement = hexadecimalToDecimal(hex_data.substring(36, 40));
         
-        //Adding the data to a JSON document and posting it to the firebase database
+        //Adding the data to a JSON document and posting it to the database
         DynamicJsonDocument doc(200);
         JsonArray array = doc.createNestedArray("ruuviData");
         JsonObject nestedRuuviData  = array.createNestedObject();
